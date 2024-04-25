@@ -1,0 +1,21 @@
+dir: ./
+tls:
+  crt: /etc/reposerve/tls.crt
+  key: /etc/reposerve/tls.key
+  # perform a redirection to https
+#  redirect:
+#    port: 443 # optional
+#    protocols: ipv4 # both | ipv4 | ipv6 | none
+  # Strict-Transport-Security header
+  hsts:
+    duration: 300 # duration in s
+    include_subdomains: true
+    preload: false
+# protect /upload and /webhooks with a JWT token
+jwt:
+  jwks: https://gitlab.com/-/jwks
+  claims:
+    iss: gitlab.com
+# webhooks definition under /webhooks/..
+webhooks:
+  sign: /usr/bin/apk_sign.sh
