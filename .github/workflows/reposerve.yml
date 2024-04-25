@@ -34,7 +34,7 @@ jobs:
         pwd
 
         cd reposerve
-        RUSTFLAGS="-C link-arg=-s" cargo build  --target x86_64-unknown-linux-musl --release
+        RUSTFLAGS="-C link-arg=-s" cargo run  --target x86_64-unknown-linux-musl --release
 
         
     - name: ls 
