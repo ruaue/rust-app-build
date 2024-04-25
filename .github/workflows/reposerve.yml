@@ -34,16 +34,16 @@ jobs:
         pwd
         cp ./reposerve.yaml /etc/
         cd reposerve
-        RUSTFLAGS="-C link-arg=-s" cargo run  --target x86_64-unknown-linux-musl --release
+        RUSTFLAGS="-C link-arg=-s" cargo build  --target x86_64-unknown-linux-musl --release
 
         
     - name: ls 
       run: |
          pwd
-         ls reposerve/target/release
+         ls reposerve/target/x86_64-unknown-linux-musl/release
     - name: Upload release
       uses: softprops/action-gh-release@v0.1.15
       with:
        tag_name: ${{ github.ref_name }}
        files: |
-           reposerve/target/release/reposerve
+           target/x86_64-unknown-linux-musl/release/reposerve
