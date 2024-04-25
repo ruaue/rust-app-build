@@ -1,0 +1,49 @@
+name: reposerve static build for musl-linux
+permissions:
+  contents: write
+on:
+  workflow_dispatch:
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: 
+      image: rust:alpine
+      env:
+        TZ: Asia/Shanghai
+      options: --privileged
+      
+    steps:
+
+    - name: git clone reposerve
+      run: |
+        set -eux
+        apk --update add clang-dev llvm-dev
+        apk add git
+        git clone   https://github.com/ruaue/reposerve
+         
+         
+    - name: setup rust target
+      run: |
+        rustup target add x86_64-unknown-linux-musl
+       
+    - name: build reposerve
+    #  working-directory:reposerve
+      run: |
+        set -eux
+        pwd
+
+        cd reposerve
+        RUSTFLAGS="-C link-arg=-s" cargo build  --target x86_64-unknown-linux-musl --release
+
+        
+    - name: ls 
+      run: |
+         pwd
+         ls reposerve/target/release
+    - name: Upload release
+      uses: softprops/action-gh-release@v0.1.15
+      with:
+       tag_name: ${{ github.ref_name }}
+       files: |
+           reposerve/target/release/reposerve
