@@ -47,9 +47,10 @@ jobs:
       run: |
          pwd
          ls webdav-server-rs/target/release
-    - name: Upload release
-      uses: softprops/action-gh-release@v0.1.15
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
       with:
-       tag_name: ${{ github.ref_name }}
-       files: |
-           webdav-server-rs/target/release/webdav-server
+          name: webdav-server
+          path: webdav-server-rs/target/release/webdav-server
+          
