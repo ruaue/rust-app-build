@@ -1,0 +1,48 @@
+name: ss-rust static build for musl-linux
+permissions:
+  contents: write
+on:
+  workflow_dispatch:
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: 
+      image: rust:alpine
+      env:
+        TZ: Asia/Shanghai
+      options: --privileged
+      
+    steps:
+
+    - name: git clone ss-rust
+      run: |
+        set -eux
+        apk --update add build-base musl-dev
+        apk add git
+        git clone   https://github.com/shadowsocks/shadowsocks-rust
+         
+    - name: setup rust target
+      run: |
+        rustup target add aarch64-unknown-linux-musl
+       
+    - name: build rust project 
+    
+      run: |
+        set -eux
+        pwd
+
+        cd shadowsocks-rust
+        RUSTFLAGS="-C link-arg=-s" cargo build  --target aarch64-unknown-linux-musl --release 
+
+        
+    - name: ls 
+      run: |
+         pwd
+         ls shadowsocks-rust/target/release
+    - name: Upload release
+      uses: softprops/action-gh-release@v0.1.15
+      with:
+       tag_name: ${{ github.ref_name }}
+       files: |
+           shadowsocks-rust/target/release/ss*
