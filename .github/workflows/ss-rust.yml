@@ -24,9 +24,8 @@ jobs:
          
     - name: setup rust target
       run: |
-        apk add podman
-        cargo install cross --git https://github.com/cross-rs/cross
-       
+        rustup target add x86_64-unknown-linux-musl
+        
     - name: cross build rust project 
     
       run: |
@@ -34,7 +33,7 @@ jobs:
         pwd
 
         cd shadowsocks-rust
-        RUSTFLAGS="-C link-arg=-s" cross build  --target aarch64-unknown-linux-musl --release 
+        RUSTFLAGS="-C link-arg=-s" cross build  --target x86_64-unknown-linux-musl --release 
 
         
     - name: ls 
