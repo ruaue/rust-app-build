@@ -24,7 +24,8 @@ jobs:
          
     - name: setup rust target
       run: |
-        rustup target add x86_64-unknown-linux-musl
+        cargo install cargo-ndk
+        rustup target add aarch64-linux-android
         
     - name: cross build rust project 
     
@@ -33,7 +34,7 @@ jobs:
         pwd
 
         cd shadowsocks-rust
-        RUSTFLAGS="-C link-arg=-s" cargo build  --target x86_64-unknown-linux-musl --release 
+        cargo ndk -t arm64-v8a -o ./ build --release 
 
         
     - name: ls 
