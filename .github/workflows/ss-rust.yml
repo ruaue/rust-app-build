@@ -1,49 +1,51 @@
-name: ss-rust static build for musl-linux
-permissions:
-  contents: write
+name: Build ss-rust for android
+
 on:
   workflow_dispatch:
-  
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: 
-      image: rust:alpine
-      env:
-        TZ: Asia/Shanghai
-      options: --privileged
-      
-    steps:
-
-    - name: git clone ss-rust
-      run: |
-        set -eux
-        apk --update add build-base musl-dev
-        apk add git
-        git clone   https://github.com/shadowsocks/shadowsocks-rust
-         
-    - name: setup rust target
-      run: |
-        cargo install cargo-ndk
-        rustup target add aarch64-linux-android
-        
-    - name: cross build rust project 
     
-      run: |
-        set -eux
-        pwd
+    steps:
+      - uses: actions/checkout@v4.1.1
+        with:
+          fetch-depth: 0
+          repository: ruaue/shadowsocks-rust
+          
 
-        cd shadowsocks-rust
-        cargo ndk -t arm64-v8a -o ./ build --release 
+      - name: Install toolchain if not cross-compiling
+        uses: dtolnay/rust-toolchain@stable
+        with: 
+         targets: aarch64-linux-android
 
-        
-    - name: ls 
-      run: |
-         pwd
-         ls shadowsocks-rust/target/release
-    - name: Upload release
-      uses: softprops/action-gh-release@v0.1.15
-      with:
-       tag_name: ${{ github.ref_name }}
-       files: |
-           shadowsocks-rust/target/release/ss*
+      - name: Setup NDK
+        uses: nttld/setup-ndk@v1
+        id: setup-ndk
+        with:
+          ndk-version: r26d
+          add-to-path: false
+          local-cache: false
+     
+      - name: setup cargo-ndk
+        run: |
+          set -e
+          pwd
+          cargo install cargo-ndk
+          rustup target add aarch64-linux-android
+
+      - name: Build ss-rust
+        env:
+          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+        run: |
+
+          cargo ndk -t aarch64-linux-android  build --release --features="local-redir,aead-cipher-2022,local-redir,local-dns,local-tun"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: shadowsocks-rust
+          path: |
+            target/aarch64-linux-android/release/sslocal
+            target/aarch64-linux-android/release/ssservice
+            
