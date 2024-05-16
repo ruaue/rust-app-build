@@ -24,16 +24,16 @@ jobs:
          
     - name: setup rust target
       run: |
-        rustup target add aarch64-unknown-linux-musl
+        cargo install cross --git https://github.com/cross-rs/cross
        
-    - name: build rust project 
+    - name: cross build rust project 
     
       run: |
         set -eux
         pwd
 
         cd shadowsocks-rust
-        RUSTFLAGS="-C link-arg=-s" cargo build  --target aarch64-unknown-linux-musl --release 
+        RUSTFLAGS="-C link-arg=-s" cross build  --target aarch64-unknown-linux-musl --release 
 
         
     - name: ls 
