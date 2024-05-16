@@ -24,6 +24,7 @@ jobs:
          
     - name: setup rust target
       run: |
+        apk add podman
         cargo install cross --git https://github.com/cross-rs/cross
        
     - name: cross build rust project 
