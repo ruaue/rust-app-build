@@ -33,7 +33,7 @@ jobs:
         pwd
 
         cd shadowsocks-rust
-        RUSTFLAGS="-C link-arg=-s" cross build  --target x86_64-unknown-linux-musl --release 
+        RUSTFLAGS="-C link-arg=-s" cargo build  --target x86_64-unknown-linux-musl --release 
 
         
     - name: ls 
