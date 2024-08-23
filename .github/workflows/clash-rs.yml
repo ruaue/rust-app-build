@@ -1,0 +1,49 @@
+name: clash-rs static build for musl-linux
+permissions:
+  contents: write
+on:
+  workflow_dispatch:
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: 
+      image: rust:alpine
+      env:
+        TZ: Asia/Shanghai
+      options: --privileged
+      
+    steps:
+
+    - name: git clone reposerve
+      run: |
+        set -eux
+        apk --update add clang-dev llvm-dev
+        apk add git
+        git clone   https://github.com/Watfaq/clash-rs
+        
+         
+    - name: setup rust target
+      run: |
+        rustup target add x86_64-unknown-linux-musl
+       
+    - name: build reposerve
+    #  working-directory:clash-rs
+      run: |
+        set -eux
+        pwd
+      
+        cd clash-rs
+        RUSTFLAGS=-C target-feature=+crt-static --cfg tokio_unstable cargo build --all-features --target x86_64-unknown-linux-musl --release --package clash-rs
+
+        
+    - name: ls 
+      run: |
+         pwd
+         ls clash-rs/target/x86_64-unknown-linux-musl/release
+    - name: Upload release
+      uses: softprops/action-gh-release@v0.1.15
+      with:
+       tag_name: ${{ github.ref_name }}
+       files: |
+           clash-rs/target/x86_64-unknown-linux-musl/release/clash-rs
