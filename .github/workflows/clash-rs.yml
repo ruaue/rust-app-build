@@ -34,7 +34,7 @@ jobs:
         pwd
       
         cd clash-rs
-        RUSTFLAGS=-C target-feature=+crt-static --cfg tokio_unstable cargo build --all-features --target x86_64-unknown-linux-musl --release --package clash-rs
+        RUSTFLAGS=-Ctarget-feature=+crt-static --cfg tokio_unstable cargo build --all-features --target x86_64-unknown-linux-musl --release --package clash-rs
 
         
     - name: ls 
