@@ -25,12 +25,14 @@ jobs:
          
     - name: install linux-pam 
       run: |
+       apk add --no-cache musl-dev
        apk add rpcgen 
        apk add portablexdr-dev       
        apk add linux-pam
        apk add linux-pam-dev
        apk add libtirpc
        apk add libtirpc-dev
+       
     - name: setup rust target
       run: |
         rustup target add x86_64-unknown-linux-musl
