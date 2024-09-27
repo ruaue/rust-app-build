@@ -33,7 +33,7 @@ jobs:
        apk add libtirpc
        apk add libtirpc-dev
        apk add binutils
-       apk add rustup
+       apk add rust cargo rustup
        
     - name: setup rust target
       run: |
