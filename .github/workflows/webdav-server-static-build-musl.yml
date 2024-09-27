@@ -37,7 +37,6 @@ jobs:
     - name: install rustup
       run: |
        apk  add rustup
-       which rustup
        
     - name: setup rust target
       run: |
