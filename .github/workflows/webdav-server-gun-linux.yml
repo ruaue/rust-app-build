@@ -46,11 +46,11 @@ jobs:
     - name: ls 
       run: |
          pwd
-         ls webdav-server-rs/target/x86_64-unknown-linux-gnu
+         ls webdav-server-rs/target/x86_64-unknown-linux-gnu/release
           
     - name: Upload release
       uses: softprops/action-gh-release@v0.1.15
       with:
        tag_name: ${{ github.ref_name }}
        files: |
-           webdav-server-rs/target/release/webdav-server
+           webdav-server-rs/target/x86_64-unknown-linux-gnu/release/webdav-server
