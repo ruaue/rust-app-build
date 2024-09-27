@@ -46,7 +46,7 @@ jobs:
     - name: ls 
       run: |
          pwd
-         ls webdav-server-rs/target/x86_64-unknown-linux-gnu/webdav-server
+         ls webdav-server-rs/target/
           
     - name: Upload release
       uses: softprops/action-gh-release@v0.1.15
