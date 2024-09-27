@@ -53,9 +53,10 @@ jobs:
          pwd
          ls webdav-server-rs/target/x86_64-unknown-linux-musl/release
          strip webdav-server-rs/target/x86_64-unknown-linux-musl/release/webdav-server
+         mv webdav-server-rs/target/x86_64-unknown-linux-musl/release/webdav-server webdav-server-rs/target/x86_64-unknown-linux-musl/release/webdav-server-musl
     - name: Upload release
       uses: softprops/action-gh-release@v0.1.15
       with:
        tag_name: ${{ github.ref_name }}
        files: |
-           webdav-server-rs/target/x86_64-unknown-linux-musl/release/webdav-server
+           webdav-server-rs/target/x86_64-unknown-linux-musl/release/webdav-server-musl
