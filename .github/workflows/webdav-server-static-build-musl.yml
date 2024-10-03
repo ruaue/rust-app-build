@@ -49,7 +49,7 @@ jobs:
         pwd
 
         cd webdav-server-rs
-        RUSTFLAGS="-C target-feature=-crt-static" cargo build  --target x86_64-unknown-linux-musl --release  --all-features
+        RUSTFLAGS="-C target-feature=-crt-static  -C link-self-contained=yes"  cargo build  --target x86_64-unknown-linux-musl --release  --all-features
 
         
     - name: ls 
