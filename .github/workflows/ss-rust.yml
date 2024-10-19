@@ -26,7 +26,7 @@ jobs:
     - name: install musl-dev 
       run: |
        apk add --no-cache musl-dev
-       apk add --no-cache openssl-dev
+       apk add --no-cache libssl-dev
        
 
     - name: install rustup
