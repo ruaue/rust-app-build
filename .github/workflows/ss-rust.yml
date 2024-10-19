@@ -1,0 +1,59 @@
+name: ss-rust-server static build for musl-linux
+permissions:
+  contents: write
+on:
+  workflow_dispatch:
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: 
+      image: debiansid/containers:rust
+      env:
+        TZ: Asia/Shanghai
+      options: --privileged
+      
+    steps:
+
+    - name: git clone ss-rust
+      run: |
+        set -eux
+        apk --update add build-base musl-dev
+        apk add git
+        git clone   https://github.com/shadowsocks/shadowsocks-rust
+         
+         
+    - name: install musl-dev 
+      run: |
+       apk add --no-cache musl-dev
+       
+
+    - name: install rustup
+      run: |
+       apk  add rustup
+       
+    - name: setup rust target
+      run: |
+        rustup target add x86_64-unknown-linux-musl
+       
+    - name: build rust project 
+    #  working-directory:webdav-server-rs
+      run: |
+        set -eux
+        pwd
+
+        cd shadowsocks-rust
+        RUSTFLAGS="-C target-feature=-crt-static  -C link-self-contained=yes"  cargo build  --target x86_64-unknown-linux-musl --release  --all-features
+
+        
+    - name: ls 
+      run: |
+         pwd
+         ls shadowsocks-rust/target/x86_64-unknown-linux-musl/release
+         strip shadowsocks-rust/target/x86_64-unknown-linux-musl/release/ss*
+    - name: Upload release
+      uses: softprops/action-gh-release@v0.1.15
+      with:
+       tag_name: ${{ github.ref_name }}
+       files: |
+           shadowsocks-rust/target/x86_64-unknown-linux-musl/release/ss*
