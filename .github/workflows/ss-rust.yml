@@ -52,10 +52,10 @@ jobs:
       run: |
          pwd
          ls shadowsocks-rust/target/x86_64-unknown-linux-musl/release
-         strip shadowsocks-rust/target/x86_64-unknown-linux-musl/release/ss*
+         strip shadowsocks-rust/target/x86_64-unknown-linux-musl/release/ssserver
     - name: Upload release
       uses: softprops/action-gh-release@v0.1.15
       with:
        tag_name: ${{ github.ref_name }}
        files: |
-           shadowsocks-rust/target/x86_64-unknown-linux-musl/release/ss*
+           shadowsocks-rust/target/x86_64-unknown-linux-musl/release/ssserver
