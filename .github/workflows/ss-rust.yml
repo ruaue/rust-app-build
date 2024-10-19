@@ -21,7 +21,7 @@ jobs:
         apk --update add build-base musl-dev
         apk add git
         git clone   https://github.com/shadowsocks/shadowsocks-rust
-        cd shadowsock-rust
+        cd shadowsocks-rust
         git checkout  v1.21.0
         cd ../
          
