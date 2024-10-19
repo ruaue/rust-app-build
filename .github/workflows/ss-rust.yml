@@ -23,10 +23,9 @@ jobs:
         git clone   https://github.com/shadowsocks/shadowsocks-rust
          
          
-    - name: install musl-dev 
+    - name: install openssl-dev 
       run: |
-       apk add --no-cache musl-dev
-       apk add --no-cache openssl-dev
+       apk add --no-cache openssl-dev perl
        
 
     - name: install rustup
