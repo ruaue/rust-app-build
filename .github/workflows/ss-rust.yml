@@ -25,7 +25,7 @@ jobs:
          
     - name: install openssl-dev 
       run: |
-       apk add --no-cache openssl-dev perl
+       apk add --no-cache openssl-dev perl cmake
        
 
     - name: install rustup
