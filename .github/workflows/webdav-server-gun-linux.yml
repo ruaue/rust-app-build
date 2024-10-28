@@ -25,8 +25,9 @@ jobs:
       run: |
         set -eux
         git clone   https://github.com/ruaue/webdav-server-rs
+        cd webdav-server-rs
         git checkout v0.4.0
-         
+        cd ..
          
   
           
