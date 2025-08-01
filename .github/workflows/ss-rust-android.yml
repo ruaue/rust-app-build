@@ -42,7 +42,7 @@ jobs:
           cargo ndk -t aarch64-linux-android  build --release --features="local-redir,aead-cipher-2022,local-redir,local-dns,local-tun"
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: shadowsocks-rust
           path: |
