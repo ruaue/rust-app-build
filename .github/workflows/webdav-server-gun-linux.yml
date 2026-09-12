@@ -1,58 +1,67 @@
 name: webdav-server build for gnu-linux
+
 permissions:
   contents: write
+
 on:
   workflow_dispatch:
-         
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: 
+
+    container:
       image: rust:slim
       env:
         TZ: Asia/Shanghai
       options: --privileged
-      
+
     steps:
-    - name: Install libpam and librpc
-      run: |
-          apt-get update -y
-          apt-get install git -y
-          apt-get install libpam0g-dev -y
-          apt-get install libntirpc-dev -y
-          
-    - name: git clone webdav-server-rs
-      run: |
-        set -eux
-        git clone   https://github.com/ruaue/webdav-server-rs
-        cd webdav-server-rs
-        git checkout v0.4.0
-        cd ..
-         
-  
-          
-    - name: setup rust target
-      run: |
-        rustup target add x86_64-unknown-linux-gnu
-       
-    - name: build rust project 
-    #  working-directory:webdav-server-rs
-      run: |
-        set -eux
-        pwd
+      - name: Install build dependencies
+        run: |
+          set -eux
+          apt-get update
+          apt-get install -y \
+            git \
+            libpam0g-dev \
+            libtirpc-dev \
+            rpcsvc-proto
 
-        cd webdav-server-rs
-        RUSTFLAGS="-C link-arg=-s" cargo build --target x86_64-unknown-linux-gnu --release  --all-features
+      - name: git clone webdav-server-rs
+        run: |
+          set -eux
+          git clone https://github.com/ruaue/webdav-server-rs
+          cd webdav-server-rs
+          git checkout v0.4.0
+          cd ..
 
-        
-    - name: ls 
-      run: |
-         pwd
-         ls webdav-server-rs/target/x86_64-unknown-linux-gnu/release
-          
-    - name: Upload release
-      uses: softprops/action-gh-release@v0.1.15
-      with:
-       tag_name: ${{ github.ref_name }}
-       files: |
-           webdav-server-rs/target/x86_64-unknown-linux-gnu/release/webdav-server
+      - name: Setup Rust target
+        run: |
+          set -eux
+          rustup target add x86_64-unknown-linux-gnu
+
+      - name: Build Rust project
+        run: |
+          set -eux
+          pwd
+
+          cd webdav-server-rs
+
+          RUSTFLAGS="-C link-arg=-s" \
+            cargo build \
+              --target x86_64-unknown-linux-gnu \
+              --release \
+              --all-features
+
+      - name: List build output
+        run: |
+          set -eux
+          pwd
+          ls -lah webdav-server-rs/target/x86_64-unknown-linux-gnu/release
+
+      - name: Upload release
+        uses: softprops/action-gh-release@v0.1.15
+        with:
+          tag_name: ${{ github.ref_name }}
+          files: |
+            webdav-server-rs/target/x86_64-unknown-linux-gnu/release/webdav-server
