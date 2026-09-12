@@ -26,6 +26,7 @@ jobs:
 
           apt-get install -y \
             git \
+            file \
             libpam0g-dev \
             libtirpc-dev \
             rpcsvc-proto
@@ -65,9 +66,7 @@ jobs:
           BINARY="webdav-server-rs/target/x86_64-unknown-linux-gnu/release/webdav-server"
 
           test -x "$BINARY"
-
           file "$BINARY"
-
           ls -lh "$BINARY"
 
       - name: Prepare artifact
@@ -104,33 +103,3 @@ jobs:
           files: |
             dist/webdav-server
             dist/webdav-server.sha256
-      - name: Setup Rust target
-        run: |
-          set -eux
-          rustup target add x86_64-unknown-linux-gnu
-
-      - name: Build Rust project
-        run: |
-          set -eux
-          pwd
-
-          cd webdav-server-rs
-
-          RUSTFLAGS="-C link-arg=-s" \
-            cargo build \
-              --target x86_64-unknown-linux-gnu \
-              --release \
-              --all-features
-
-      - name: List build output
-        run: |
-          set -eux
-          pwd
-          ls -lah webdav-server-rs/target/x86_64-unknown-linux-gnu/release
-
-      - name: Upload release
-        uses: softprops/action-gh-release@v0.1.15
-        with:
-          tag_name: ${{ github.ref_name }}
-          files: |
-            webdav-server-rs/target/x86_64-unknown-linux-gnu/release/webdav-server
