@@ -1,105 +1,15 @@
-name: webdav-server build for gnu-linux
+- name: Build webdav-server
+  run: |
+    set -eux
 
-permissions:
-  contents: write
+    cd webdav-server-rs
 
-on:
-  workflow_dispatch:
+    RUSTFLAGS="-C strip=symbols" \
+      cargo build \
+        --target x86_64-unknown-linux-gnu \
+        --release \
+        --all-features
 
-jobs:
-  build:
-    name: Build webdav-server x86_64 GNU/Linux
-    runs-on: ubuntu-latest
+    strip target/x86_64-unknown-linux-gnu/release/webdav-server
 
-    container:
-      image: rust:slim
-      env:
-        TZ: Asia/Shanghai
-      options: --privileged
-
-    steps:
-      - name: Install build dependencies
-        run: |
-          set -eux
-
-          apt-get update
-
-          apt-get install -y \
-            git \
-            file \
-            libpam0g-dev \
-            libtirpc-dev \
-            rpcsvc-proto
-
-      - name: Clone webdav-server-rs
-        run: |
-          set -eux
-
-          git clone \
-            https://github.com/homerouter/webdav-server-rs.git \
-            webdav-server-rs
-
-          git -C webdav-server-rs rev-parse HEAD
-
-      - name: Setup Rust target
-        run: |
-          set -eux
-
-          rustup target add x86_64-unknown-linux-gnu
-
-      - name: Build webdav-server
-        run: |
-          set -eux
-
-          cd webdav-server-rs
-
-          RUSTFLAGS="-C link-arg=-s" \
-            cargo build \
-              --target x86_64-unknown-linux-gnu \
-              --release \
-              --all-features
-
-      - name: Verify build
-        run: |
-          set -eux
-
-          BINARY="webdav-server-rs/target/x86_64-unknown-linux-gnu/release/webdav-server"
-
-          test -x "$BINARY"
-          file "$BINARY"
-          ls -lh "$BINARY"
-
-      - name: Prepare artifact
-        run: |
-          set -eux
-
-          mkdir -p dist
-
-          cp \
-            webdav-server-rs/target/x86_64-unknown-linux-gnu/release/webdav-server \
-            dist/webdav-server
-
-          chmod +x dist/webdav-server
-
-          sha256sum dist/webdav-server > dist/webdav-server.sha256
-
-          ls -lh dist
-          cat dist/webdav-server.sha256
-
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v7
-        with:
-          name: webdav-server-linux-amd64
-          path: |
-            dist/webdav-server
-            dist/webdav-server.sha256
-          if-no-files-found: error
-          compression-level: 0
-
-      - name: Upload release
-        uses: softprops/action-gh-release@v0.1.15
-        with:
-          tag_name: ${{ github.ref_name }}
-          files: |
-            dist/webdav-server
-            dist/webdav-server.sha256
+    ls -lh target/x86_64-unknown-linux-gnu/release/webdav-server
